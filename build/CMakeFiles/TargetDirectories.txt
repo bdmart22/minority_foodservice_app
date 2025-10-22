@@ -1,3 +1,0 @@
-/home/bdmart22/minority_foodservice_app/build/CMakeFiles/foodapp-server.dir
-/home/bdmart22/minority_foodservice_app/build/CMakeFiles/edit_cache.dir
-/home/bdmart22/minority_foodservice_app/build/CMakeFiles/rebuild_cache.dir
