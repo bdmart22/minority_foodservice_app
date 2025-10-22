@@ -27,30 +27,49 @@ endif()
 # --- Download standalone Asio if missing ---
 if(NOT EXISTS "${PROJECT_SOURCE_DIR}/include/asio.hpp")
     message(STATUS "Downloading Asio (standalone)...")
+
+    set(ASIO_ZIP "${PROJECT_SOURCE_DIR}/include/asio.zip")
+    set(ASIO_DIR "${PROJECT_SOURCE_DIR}/include/asio-master")
+
     file(DOWNLOAD
         https://github.com/chriskohlhoff/asio/archive/refs/heads/master.zip
-        ${PROJECT_SOURCE_DIR}/include/asio.zip
+        ${ASIO_ZIP}
         SHOW_PROGRESS
     )
+
+    # Extract the zip file (uses cmake -E tar to unzip)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} -E tar xzf ${PROJECT_SOURCE_DIR}/include/asio.zip
+        COMMAND ${CMAKE_COMMAND} -E tar xzf ${ASIO_ZIP}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/include
+        RESULT_VARIABLE unzip_result
     )
+
+    # If unzip failed, try using 'unzip' command as fallback
+    if(NOT unzip_result EQUAL 0)
+        message(WARNING "CMake unzip failed, trying system unzip...")
+        execute_process(
+            COMMAND unzip -o ${ASIO_ZIP} -d ${PROJECT_SOURCE_DIR}/include
+        )
+    endif()
+
+    # Move the extracted files into place
     execute_process(
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${PROJECT_SOURCE_DIR}/include/asio-master/asio
+        ${ASIO_DIR}/asio
         ${PROJECT_SOURCE_DIR}/include/asio
     )
     execute_process(
         COMMAND ${CMAKE_COMMAND} -E copy
-        ${PROJECT_SOURCE_DIR}/include/asio-master/asio.hpp
+        ${ASIO_DIR}/asio.hpp
         ${PROJECT_SOURCE_DIR}/include/asio.hpp
     )
+
+    # Clean up
     execute_process(
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${PROJECT_SOURCE_DIR}/include/asio-master
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${ASIO_DIR}
     )
     execute_process(
-        COMMAND ${CMAKE_COMMAND} -E remove ${PROJECT_SOURCE_DIR}/include/asio.zip
+        COMMAND ${CMAKE_COMMAND} -E remove ${ASIO_ZIP}
     )
 endif()
 
