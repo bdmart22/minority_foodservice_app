@@ -1,0 +1,1 @@
+/usr/bin/c++ "CMakeFiles/foodapp-server.dir/main.cpp.o" "CMakeFiles/foodapp-server.dir/src/db.cpp.o" "CMakeFiles/foodapp-server.dir/src/translate.cpp.o" -o foodapp-server  -lpthread -lcurl -lmysqlclient 
